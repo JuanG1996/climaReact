@@ -1,17 +1,22 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Clima from './components/Clima';
+import Error from './components/Error';
 import Formulario from './components/Formulario';
 import Header from './components/Header';
 
 function App() {
 
-    // state del formulario
+    // state del formulario, guarda lo que se coloque en el formulario antes del submit
     const [busqueda, guardarBusqueda] = useState({
       ciudad: "",
       pais: ""
   });
+    //Valida si se dio submit al formulario (para no ejecutarse por primera vez al iniciar el DOM)
     const [consultar, guardarConsultar] = useState(false);
+    //Aqui se guarda la info que viene de la API
     const [resultado, guardarResultado] = useState({});
+    //Indica si el mensaje de error se muestra o no
+    const [error, guardarError] = useState(false);
 
   //Extraer ciudad y pais
   const {ciudad, pais} = busqueda;
@@ -25,14 +30,29 @@ function App() {
           const respuesta = await fetch(url);
           const resultado = await respuesta.json();
           guardarResultado(resultado);
+          guardarConsultar(false);
+
+          //Detecta si hubo o no resultados
+          if (resultado.cod === "404") {
+            guardarError(true);
+          }else{
+            guardarError(false);
+          }
         }
       }
 
       consultarAPI();
   }, [consultar]);
 
-
-  
+  let componente;
+  if(error){
+    componente = <Error mensaje = "No hay resultados"/>
+  }else{
+    componente =  <Clima
+                  resultado = {resultado}
+                />
+  }
+ 
 
   return (
     <Fragment>
@@ -47,10 +67,11 @@ function App() {
                     busqueda = {busqueda}
                     guardarBusqueda = {guardarBusqueda}
                     guardarConsultar = {guardarConsultar}
+                    guardarError = {guardarError}
                   />
                 </div>
                 <div className="col m6 s12">
-                  <Clima />
+                 {componente}
                 </div>
               </div>
             </div>

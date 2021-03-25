@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 
-const Formulario = ({busqueda, guardarBusqueda, guardarConsultar}) => {
+const Formulario = ({busqueda, guardarBusqueda, guardarConsultar,guardarError}) => {
 
 
-    const [error, guardarError] = useState(false);
+    // const [error, guardarError] = useState(false);
 
 
     //Funcion que coloca los elementos en el state
@@ -39,7 +39,7 @@ const Formulario = ({busqueda, guardarBusqueda, guardarConsultar}) => {
         <form 
             onSubmit = {handleSubmit}
         >
-            {error? <p className="red darken-4 error">Todos los campos son obligatorios</p> : null}
+            
             <div className="input-field col s12">
                 <input type="text"
                     name = "ciudad"
